@@ -46,30 +46,35 @@ const AboutCard = ({ title, content }: { title: string; content: string }) => {
 
 const services = [
   {
-    icon: <img src="/assets/IT CONSULTING.png" alt="IT Consulting" className="service-icon-img" style={{ width: '1em', height: '1em' }} />,
+    iconLight: '/assets/IT CONSULTING LIGHT.png',
+    iconDark: '/assets/IT CONSULTING DARK.png',
     title: 'IT Consulting',
     content:
       'Process improvement plans, technology assessments, implementation, and training.',
   },
   {
-    icon: <img src="/assets/PROCESS OP.png" alt="Process Optimization" className="service-icon-img" style={{ width: '1em', height: '1em' }} />,
+    iconLight: '/assets/PROCESS OP LIGHT.png',
+    iconDark: '/assets/PROCESS OP DARK.png',
     title: 'Process Optimization',
     content:
       'In-depth analysis of operations and tailored solutions to boost efficiency.',
   },
   {
-    icon: <img src="/assets/TECHNICAL SUPPORT.png" alt="Technical Support" className="service-icon-img" style={{ width: '1em', height: '1em' }} />,
+    iconLight: '/assets/TECHNICAL SUPPORT LIGHT.png',
+    iconDark: '/assets/TECHNICAL SUPPORT DARK.png',
     title: 'Technical Support',
     content: 'Comprehensive IT assistance for hardware and software needs.',
   },
   {
-    icon: <img src="/assets/SOFTWARE D.png" alt="Software Development" className="service-icon-img" style={{ width: '1em', height: '1em' }} />,
+    iconLight: '/assets/SOFTWARE D LIGHT.png',
+    iconDark: '/assets/SOFTWARE D DARK.png',
     title: 'Software Development',
     content:
       'Customized solutions, including AI-driven features, to streamline operations.',
   },
   {
-    icon: <img src="/assets/HARDWARE A.png" alt="Hardware as a Service" className="service-icon-img" style={{ width: '1em', height: '1em' }} />,
+    iconLight: '/assets/HARDWARE A LIGHT.png',
+    iconDark: '/assets/HARDWARE A DARK.png',
     title: 'Hardware as a Service (HaaS)',
     content:
       'Access the latest technology with flexible, scalable, and fully managed hardware solutions.',
@@ -78,6 +83,7 @@ const services = [
 
 const ServiceCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [theme, setTheme] = useState('light')
   const [visibleItems, setVisibleItems] = useState(() => {
     if (typeof window !== 'undefined') {
       if (window.innerWidth < 768) return 1
@@ -88,6 +94,16 @@ const ServiceCarousel = () => {
   const [isTransitioning, setIsTransitioning] = useState(true)
   const timeoutRef = useRef<number | null>(null)
   const intervalRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    const updateTheme = () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+      setTheme(currentTheme)
+    }
+    updateTheme()
+    window.addEventListener('themeChange', updateTheme)
+    return () => window.removeEventListener('themeChange', updateTheme)
+  }, [])
 
   useEffect(() => {
     const handleResize = () => {
@@ -180,7 +196,14 @@ const ServiceCarousel = () => {
                 style={{ flex: `0 0 ${100 / visibleItems}%` }}
               >
                 <div className="service-card">
-                  <div className="service-card-icon">{service.icon}</div>
+                  <div className="service-card-icon">
+                    <img
+                      src={theme === 'dark' ? service.iconDark : service.iconLight}
+                      alt={service.title}
+                      className="service-icon-img"
+                      style={{ width: '1em', height: '1em' }}
+                    />
+                  </div>
                   <h3 className="service-card-title">{service.title}</h3>
                   <p className="service-card-content">{service.content}</p>
                 </div>
