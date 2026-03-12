@@ -78,7 +78,13 @@ const services = [
 
 const ServiceCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [visibleItems, setVisibleItems] = useState(3)
+  const [visibleItems, setVisibleItems] = useState(() => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 768) return 1
+      if (window.innerWidth < 992) return 2
+    }
+    return 3
+  })
   const [isTransitioning, setIsTransitioning] = useState(true)
   const timeoutRef = useRef<number | null>(null)
   const intervalRef = useRef<number | null>(null)
@@ -99,7 +105,16 @@ const ServiceCarousel = () => {
   }, [])
 
   const handleNext = () => {
-    setCurrentIndex((prev) => prev + 1)
+    if (currentIndex >= services.length) {
+      setIsTransitioning(false)
+      setCurrentIndex(0)
+      setTimeout(() => {
+        setIsTransitioning(true)
+        setCurrentIndex(1)
+      }, 50)
+    } else {
+      setCurrentIndex(currentIndex + 1)
+    }
   }
 
   const handlePrev = () => {
@@ -118,7 +133,7 @@ const ServiceCarousel = () => {
   useEffect(() => {
     intervalRef.current = window.setInterval(() => {
       setCurrentIndex((prev) => prev + 1)
-    }, 3000)
+    }, 5000)
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
@@ -143,35 +158,37 @@ const ServiceCarousel = () => {
   const extendedServices = [...services, ...services.slice(0, visibleItems)]
 
   return (
-    <div className="services-carousel-container">
-      <div className="services-carousel-viewport">
-        <div
-          className="services-carousel-track"
-          style={{
-            transform: `translateX(-${currentIndex * (100 / visibleItems)}%)`,
-            transition: isTransitioning ? 'transform 0.5s ease-in-out' : 'none',
-          }}
-        >
-          {extendedServices.map((service, index) => (
-            <div
-              key={index}
-              className="service-card-wrapper"
-              style={{ flex: `0 0 ${100 / visibleItems}%` }}
-            >
-              <div className="service-card">
-                <div className="service-card-icon">{service.icon}</div>
-                <h3 className="service-card-title">{service.title}</h3>
-                <p className="service-card-content">{service.content}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="services-carousel-wrapper">
       <button onClick={handlePrev} className="carousel-nav carousel-prev" aria-label="Previous slide">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M15 18l-6-6 6-6"/>
         </svg>
       </button>
+      <div className="services-carousel-container">
+        <div className="services-carousel-viewport">
+          <div
+            className="services-carousel-track"
+            style={{
+              transform: `translateX(-${currentIndex * (100 / visibleItems)}%)`,
+              transition: isTransitioning ? 'transform 0.5s ease-in-out' : 'none',
+            }}
+          >
+            {extendedServices.map((service, index) => (
+              <div
+                key={index}
+                className="service-card-wrapper"
+                style={{ flex: `0 0 ${100 / visibleItems}%` }}
+              >
+                <div className="service-card">
+                  <div className="service-card-icon">{service.icon}</div>
+                  <h3 className="service-card-title">{service.title}</h3>
+                  <p className="service-card-content">{service.content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
       <button onClick={handleNext} className="carousel-nav carousel-next" aria-label="Next slide">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M9 18l6-6-6-6"/>
@@ -186,15 +203,21 @@ const Home = () => {
     <div className="home">
       <ThemeToggle />
 
-      <section className="hero">
+      <section className="hero section-primary">
         <HeroCarousel />
       </section>
 
-      <section className="mission-vision">
+      <section className="mission-vision section-secondary">
         <div className="container">
           <div className="mission-vision-grid">
             <div className="card mission-card">
-              <div className="card-icon">🎯</div>
+              <div className="card-icon">
+                <img
+                  src="/assets/OUR MISSION.png"
+                  alt="Our Mission"
+                  style={{ width: '1em', height: '1em' }}
+                />
+              </div>
               <h2 className="card-title">Our Mission</h2>
               <p className="card-content">
                 To provide customized technological solutions that drive the
@@ -203,7 +226,13 @@ const Home = () => {
             </div>
 
             <div className="card vision-card">
-              <div className="card-icon">👁️</div>
+              <div className="card-icon">
+                <img
+                  src="/assets/OUR VISION.png"
+                  alt="Our Vision"
+                  style={{ width: '1em', height: '1em' }}
+                />
+              </div>
               <h2 className="card-title">Our Vision</h2>
               <p className="card-content">
                 To be leaders in digital transformation, recognized for our
@@ -215,7 +244,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="about-section">
+      <section className="about-section section-primary">
         <div className="container">
           <h2 className="section-title">About Us</h2>
           <div className="about-grid">
@@ -235,7 +264,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="how-we-work-section">
+      <section className="how-we-work-section section-secondary">
         <div className="container">
           <h2 className="section-title">How We Work</h2>
           <div className="how-we-work-grid">
@@ -271,14 +300,14 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="services-section">
+      <section className="services-section section-primary">
         <div className="container">
           <h2 className="section-title">Our Services</h2>
           <ServiceCarousel />
         </div>
       </section>
 
-      <section className="team-section">
+      <section className="team-section section-secondary">
         <div className="container">
           <h2 className="section-title">Meet Our Team</h2>
           <div className="team-grid">
