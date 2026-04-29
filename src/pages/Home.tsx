@@ -201,7 +201,7 @@ const ServiceCarousel = () => {
                       src={theme === 'dark' ? service.iconDark : service.iconLight}
                       alt={service.title}
                       className="service-icon-img"
-                      style={{ width: '1em', height: '1em' }}
+                      style={{ width: '3rem', height: '3rem', objectFit: 'contain' }}
                     />
                   </div>
                   <h3 className="service-card-title">{service.title}</h3>
@@ -222,6 +222,18 @@ const ServiceCarousel = () => {
 }
 
 const Home = () => {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+
+  useEffect(() => {
+    const updateTheme = () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+      setTheme(currentTheme)
+    }
+    updateTheme()
+    window.addEventListener('themeChange', updateTheme)
+    return () => window.removeEventListener('themeChange', updateTheme)
+  }, [])
+
   return (
     <div className="home">
       <ThemeToggle />
@@ -236,7 +248,7 @@ const Home = () => {
             <div className="card mission-card">
               <div className="card-icon">
                 <img
-                  src="/assets/OUR MISSION.png"
+                  src={theme === 'dark' ? '/assets/OUR MISSION DARK.png' : '/assets/OUR MISSION.png'}
                   alt="Our Mission"
                   style={{ width: '1em', height: '1em' }}
                 />
@@ -251,7 +263,7 @@ const Home = () => {
             <div className="card vision-card">
               <div className="card-icon">
                 <img
-                  src="/assets/OUR VISION.png"
+                  src={theme === 'dark' ? '/assets/OUR VISION DARK.png' : '/assets/OUR VISION.png'}
                   alt="Our Vision"
                   style={{ width: '1em', height: '1em' }}
                 />
@@ -292,28 +304,52 @@ const Home = () => {
           <h2 className="section-title">How We Work</h2>
           <div className="how-we-work-grid">
             <div className="work-step-card">
-              <div className="work-step-emoji">🤝</div>
+              <div className="work-step-icon">
+                <img
+                  src={theme === 'dark' ? '/assets/GetToKnowYOu DARK.png' : '/assets/GetToKnowYOu.png'}
+                  alt="Get to Know You"
+                  style={{ width: '3rem', height: '3rem', objectFit: 'contain' }}
+                />
+              </div>
               <h3 className="work-step-title">Get to Know You</h3>
               <p className="work-step-description">
                 We meet and discuss your current challenges while setting clear goals.
               </p>
             </div>
             <div className="work-step-card">
-              <div className="work-step-emoji">💡</div>
+              <div className="work-step-icon">
+                <img
+                  src={theme === 'dark' ? '/assets/IdentifyYourSolution DARK.png' : '/assets/IdentifyYourSolution.png'}
+                  alt="Identify Your Solution"
+                  style={{ width: '3rem', height: '3rem', objectFit: 'contain' }}
+                />
+              </div>
               <h3 className="work-step-title">Identify Your Solution</h3>
               <p className="work-step-description">
                 We assess the best-fit solutions and provide the knowledge you need to make informed decisions.
               </p>
             </div>
             <div className="work-step-card">
-              <div className="work-step-emoji">🚀</div>
+              <div className="work-step-icon">
+                <img
+                  src={theme === 'dark' ? '/assets/ImplementYourSolution DARK.png' : '/assets/ImplementYourSolution.png'}
+                  alt="Implement Your Solution"
+                  style={{ width: '3rem', height: '3rem', objectFit: 'contain' }}
+                />
+              </div>
               <h3 className="work-step-title">Implement Your Solution</h3>
               <p className="work-step-description">
                 We manage implementation and provide hands-on training.
               </p>
             </div>
             <div className="work-step-card">
-              <div className="work-step-emoji">📈</div>
+              <div className="work-step-icon">
+                <img
+                  src={theme === 'dark' ? '/assets/ContinuousImprovement DARK.png' : '/assets/ContinuousImprovement.png'}
+                  alt="Continuous Improvement"
+                  style={{ width: '3rem', height: '3rem', objectFit: 'contain' }}
+                />
+              </div>
               <h3 className="work-step-title">Continuous Improvement</h3>
               <p className="work-step-description">
                 We regularly review processes and technology to keep your business performing at its best.

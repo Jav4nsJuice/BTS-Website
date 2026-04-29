@@ -9,6 +9,7 @@ const ThemeToggle = () => {
     const savedTheme = localStorage.getItem('theme') || 'light'
     setTheme(savedTheme)
     document.documentElement.setAttribute('data-theme', savedTheme)
+    window.dispatchEvent(new Event('themeChange'))
   }, [])
 
   const toggleTheme = () => {

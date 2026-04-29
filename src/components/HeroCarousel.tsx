@@ -24,6 +24,17 @@ const carouselItems: CarouselItem[] = [
 
 const HeroCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+
+  useEffect(() => {
+    const updateTheme = () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+      setTheme(currentTheme)
+    }
+    updateTheme()
+    window.addEventListener('themeChange', updateTheme)
+    return () => window.removeEventListener('themeChange', updateTheme)
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -56,7 +67,13 @@ const HeroCarousel = () => {
           <div
             key={item.id}
             className={`carousel-slide ${index === currentIndex ? 'active' : ''} ${index === 0 ? 'logo-slide' : ''}`}
-            style={{ backgroundImage: `url(${item.image})` }}
+            style={{
+              backgroundImage: `url("${
+                item.id === 1 && theme === 'dark'
+                  ? '/assets/BTS BANNER DARK.png'
+                  : item.image
+              }")`
+            }}
           >
             <div className="carousel-overlay"></div>
             <div className="carousel-content">
