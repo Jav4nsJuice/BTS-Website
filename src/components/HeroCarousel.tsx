@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTheme } from './useTheme'
 
 interface CarouselItem {
   id: number
@@ -24,17 +25,7 @@ const carouselItems: CarouselItem[] = [
 
 const HeroCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
-
-  useEffect(() => {
-    const updateTheme = () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
-      setTheme(currentTheme)
-    }
-    updateTheme()
-    window.addEventListener('themeChange', updateTheme)
-    return () => window.removeEventListener('themeChange', updateTheme)
-  }, [])
+  const theme = useTheme()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -60,6 +51,13 @@ const HeroCarousel = () => {
     )
   }
 
+  const getSlideImage = (item: CarouselItem) => {
+    if (item.id === 1 && theme === 'dark') {
+      return '/assets/BTS BANNER DARK.png'
+    }
+    return item.image
+  }
+
   return (
     <div className="hero-carousel">
       <div className="carousel-container">
@@ -67,13 +65,7 @@ const HeroCarousel = () => {
           <div
             key={item.id}
             className={`carousel-slide ${index === currentIndex ? 'active' : ''} ${index === 0 ? 'logo-slide' : ''}`}
-            style={{
-              backgroundImage: `url("${
-                item.id === 1 && theme === 'dark'
-                  ? '/assets/BTS BANNER DARK.png'
-                  : item.image
-              }")`
-            }}
+            style={{ backgroundImage: `url("${getSlideImage(item)}")` }}
           >
             <div className="carousel-overlay"></div>
             <div className="carousel-content">
@@ -85,12 +77,12 @@ const HeroCarousel = () => {
       </div>
 
       {/* Navigation Arrows */}
-      <button className="carousel-nav carousel-prev" onClick={goToPrevious} aria-label="Previous slide">
+      <button type="button" className="carousel-nav carousel-prev" onClick={goToPrevious} aria-label="Previous slide">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M15 18l-6-6 6-6"/>
         </svg>
       </button>
-      <button className="carousel-nav carousel-next" onClick={goToNext} aria-label="Next slide">
+      <button type="button" className="carousel-nav carousel-next" onClick={goToNext} aria-label="Next slide">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M9 18l6-6-6-6"/>
         </svg>
@@ -101,6 +93,7 @@ const HeroCarousel = () => {
         {carouselItems.map((_, index) => (
           <button
             key={index}
+            type="button"
             className={`carousel-dot ${index === currentIndex ? 'active' : ''}`}
             onClick={() => goToSlide(index)}
             aria-label={`Go to slide ${index + 1}`}

@@ -1,24 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useTheme } from './useTheme'
 import { Link, useLocation } from 'react-router-dom'
 import './Navigation.css'
 
 const Navigation = () => {
   const location = useLocation()
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
-
-  useEffect(() => {
-    const updateTheme = () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
-      setTheme(currentTheme)
-    }
-    updateTheme()
-    window.addEventListener('themeChange', updateTheme)
-    return () => window.removeEventListener('themeChange', updateTheme)
-  }, [])
+  const theme = useTheme()
 
   return (
     <nav className="navigation">
-      <div className="nav-container">
+      <div className="container nav-layout">
         <Link 
           to="/" 
           className="logo" 

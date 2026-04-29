@@ -3,7 +3,7 @@
 }
 
 .contact-hero {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(135deg, var(--hero-bg-start) 0%, var(--hero-bg-end) 100%);
   color: white;
   padding: 4rem 20px;
   text-align: center;
@@ -45,7 +45,7 @@
 
 .contact-content {
   padding: 4rem 20px;
-  background-color: var(--background-light);
+  background-color: var(--bg-section-secondary);
 }
 
 .contact-grid {
@@ -58,6 +58,7 @@
 
 .contact-info {
   background-color: var(--background-white);
+  border: 1px solid var(--border-color);
   padding: 2.5rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -111,6 +112,7 @@
 
 .contact-form-wrapper {
   background-color: var(--background-white);
+  border: 1px solid var(--border-color);
   padding: 2.5rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -149,14 +151,14 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: var(--primary-light);
   background-color: var(--background-white);
-  box-shadow: 0 0 0 3px rgba(10, 0, 69, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
 }
 
 .form-group textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 150px;
 }
 
 .submit-button {
@@ -177,6 +179,35 @@
   box-shadow: 0 6px 20px rgba(10, 0, 69, 0.3);
 }
 
+.submit-button:disabled,
+.submit-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.snackbar {
+  position: fixed;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  transition: bottom 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 2000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.snackbar.show {
+  bottom: 30px;
+}
+
+.snackbar.success { background-color: #28a745; }
+.snackbar.error { background-color: #dc3545; }
+
 .submit-button:active {
   transform: translateY(0);
 }
@@ -186,14 +217,14 @@
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+}
 
+@media (max-width: 768px) {
   .contact-info,
   .contact-form-wrapper {
     padding: 2rem;
   }
-}
 
-@media (max-width: 768px) {
   .contact-hero {
     padding: 3rem 20px;
   }

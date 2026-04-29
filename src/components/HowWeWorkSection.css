@@ -1,0 +1,31 @@
+.how-we-work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.work-step-card {
+  background: var(--background-light);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.work-step-card::before {
+  content: ""; position: absolute; top: 0; left: 0; width: 0; height: 4px;
+  background-color: var(--primary-color); transition: width 0.3s ease-in-out;
+}
+
+.work-step-card:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(10, 0, 69, 0.1); }
+.work-step-card:hover::before { width: 100%; }
+
+.work-step-title { font-size: 1.25rem; color: var(--primary-dark); font-weight: 600; }
+.work-step-description { font-size: 1rem; color: var(--text-light); line-height: 1.8; margin-top: 1rem; }
+
+@media (max-width: 768px) {
+  .how-we-work-grid { grid-template-columns: 1fr; }
+}

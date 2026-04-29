@@ -2,13 +2,26 @@ import { useState, useRef, useEffect } from 'react'
 import emailjs from '@emailjs/browser'
 import ReCAPTCHA from 'react-google-recaptcha'
 import ThemeToggle from '../components/ThemeToggle'
+import { useTheme } from '../components/useTheme'
 import './Contact.css'
+
+const EMAILJS_CONFIG = {
+  SERVICE_ID: 'service_smvac7c',
+  TEMPLATE_ID: 'template_xgrq1ko',
+  PUBLIC_KEY: 'YbBsx9_gTJq5y7mK7',
+};
+
+const RECAPTCHA_SITE_KEY = '6LefsTssAAAAAOD-TveIhxMw0yFT8rXWiWkR9I33';
+
+const CONTACT_INFO = {
+  email: 'info@businesstech.solutions',
+};
 
 const Contact = () => {
   const form = useRef<HTMLFormElement>(null)
   const recaptchaRef = useRef<ReCAPTCHA>(null)
+  const theme = useTheme()
   
-  // 1. State to track if Captcha is valid
   const [capVal, setCapVal] = useState<string | null>(null)
   
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -24,22 +37,13 @@ const Contact = () => {
     type: 'success'
   })
 
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  // Ensure fields aren't just whitespace and captcha is solved
+  const isFormValid = !!(capVal && formData.name.trim() && formData.email.trim() && formData.message.trim()) && !isSubmitting;
 
+  // Reset captcha value if theme changes because the widget re-renders (via the 'key' prop)
   useEffect(() => {
-    const updateTheme = () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
-      setTheme(currentTheme)
-    }
-    updateTheme()
-    window.addEventListener('themeChange', updateTheme)
-    return () => window.removeEventListener('themeChange', updateTheme)
-  }, [])
-
-  const SERVICE_ID = 'service_smvac7c';
-  const TEMPLATE_ID = 'template_xgrq1ko'; 
-  const PUBLIC_KEY = 'YbBsx9_gTJq5y7mK7'; 
-  const RECAPTCHA_SITE_KEY = '6LefsTssAAAAAOD-TveIhxMw0yFT8rXWiWkR9I33'; // PASTE YOUR GOOGLE SITE KEY HERE
+    setCapVal(null);
+  }, [theme]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -49,7 +53,6 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Extra safety check
     if (!capVal) {
       alert('Please complete the CAPTCHA first.')
       return
@@ -58,7 +61,12 @@ const Contact = () => {
     setIsSubmitting(true)
 
     if (form.current) {
-      emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, PUBLIC_KEY)
+      emailjs.sendForm(
+        EMAILJS_CONFIG.SERVICE_ID, 
+        EMAILJS_CONFIG.TEMPLATE_ID, 
+        form.current, 
+        EMAILJS_CONFIG.PUBLIC_KEY
+      )
       .then((result) => {
           console.log('SUCCESS!', result.text)
           setSnackbar({ show: true, message: 'Contact form sent successfully.', type: 'success' })
@@ -69,7 +77,7 @@ const Contact = () => {
       })
       .catch((error) => {
           console.log('FAILED...', error.text)
-          setSnackbar({ show: true, message: 'Contact form not send.', type: 'error' })
+          setSnackbar({ show: true, message: 'Failed to send message. Please try again.', type: 'error' })
           setTimeout(() => setSnackbar(prev => ({ ...prev, show: false })), 3000)
       })
       .finally(() => {
@@ -95,7 +103,9 @@ const Contact = () => {
               <div className="contact-details">
                 <div className="detail-item">
                   <span className="detail-label">Email:</span>
-                  <span className="detail-value" style={{ color: 'var(--text-light)' }}>info@businesstech.solutions</span>
+                  <span className="detail-value" style={{ color: 'var(--text-light)' }}>
+                    {CONTACT_INFO.email}
+                  </span>
                 </div>
               </div>
             </div>
@@ -141,7 +151,6 @@ const Contact = () => {
                   />
                 </div>
 
-                {/* 2. Add ReCAPTCHA Component */}
                 <div className="form-group" style={{ marginBottom: '20px', alignItems: 'center' }}>
                   <ReCAPTCHA
                     key={theme}
@@ -152,16 +161,10 @@ const Contact = () => {
                   />
                 </div>
 
-                {/* 3. Button disabled if capVal is null */}
                 <button 
                   type="submit" 
-                  className="submit-button"
-                  // Disable if submitting OR if captcha value is missing
-                  disabled={isSubmitting || !capVal || !formData.name || !formData.email || !formData.message}
-                  style={{ 
-                    opacity: (!capVal || isSubmitting || !formData.name || !formData.email || !formData.message) ? 0.6 : 1,
-                    cursor: (!capVal || isSubmitting || !formData.name || !formData.email || !formData.message) ? 'not-allowed' : 'pointer'
-                  }}
+                  className={`submit-button ${!isFormValid ? 'disabled' : ''}`}
+                  disabled={!isFormValid}
                 >
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
@@ -170,24 +173,9 @@ const Contact = () => {
           </div>
         </div>
       </section>
-      {snackbar.show && (
-        <div style={{
-          position: 'fixed',
-          bottom: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          backgroundColor: snackbar.type === 'success' ? '#28a745' : '#dc3545',
-          color: 'white',
-          padding: '12px 24px',
-          borderRadius: '4px',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-          zIndex: 1000,
-          fontSize: '1rem',
-          fontWeight: 500
-        }}>
-          {snackbar.message}
-        </div>
-      )}
+      <div className={`snackbar ${snackbar.show ? 'show' : ''} ${snackbar.type}`}>
+        {snackbar.message}
+      </div>
     </div>
   )
 }

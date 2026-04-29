@@ -1,20 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
+import { useTheme } from './useTheme'
 import { FaMoon, FaSun } from 'react-icons/fa6'
 import './ThemeToggle.css'
 
 const ThemeToggle = () => {
-  const [theme, setTheme] = useState('light')
+  const theme = useTheme()
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'light'
-    setTheme(savedTheme)
     document.documentElement.setAttribute('data-theme', savedTheme)
     window.dispatchEvent(new Event('themeChange'))
   }, [])
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(newTheme)
     localStorage.setItem('theme', newTheme)
     document.documentElement.setAttribute('data-theme', newTheme)
     window.dispatchEvent(new Event('themeChange'))

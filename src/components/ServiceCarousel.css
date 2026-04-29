@@ -1,0 +1,48 @@
+.services-carousel-wrapper { position: relative; margin: 2rem auto 0; width: 100%; }
+.services-carousel-container { position: relative; flex: 1; overflow: hidden; }
+
+.services-carousel-wrapper .carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(10, 0, 69, 0.6); border: none; color: white; width: 44px; height: 44px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 10; transition: all 0.3s ease; font-size: 1.5rem;
+}
+
+.carousel-prev { left: -60px; }
+.carousel-next { right: -60px; }
+
+.services-carousel-wrapper .carousel-nav:hover { background: var(--primary-color); transform: scale(1.1); }
+.services-carousel-viewport { width: 100%; padding: 1rem 0; }
+.services-carousel-track { display: flex; width: 100%; }
+.service-card-wrapper { padding: 0 1rem; box-sizing: border-box; }
+
+.service-card {
+  background: var(--background-white); border-radius: 12px; padding: 2rem; border: 1px solid var(--border-color);
+  display: flex; text-align: center; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%; position: relative; overflow: hidden;
+}
+
+.service-card::before {
+  content: ""; position: absolute; bottom: 0; left: 0; width: 4px; height: 0;
+  background-color: var(--primary-color); transition: height 0.3s ease-in-out; z-index: 2;
+}
+
+.service-card:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(10, 0, 69, 0.1); }
+.service-card:hover::before { height: 100%; }
+
+.service-card-title { font-size: 1.5rem; color: var(--primary-dark); font-weight: 600; margin-bottom: 1rem; }
+.service-card-content { font-size: 1rem; color: var(--text-light); line-height: 1.8; flex-grow: 1; }
+
+:root[data-theme='dark'] .services-carousel-wrapper .carousel-nav { background: rgba(255, 255, 255, 0.2); }
+
+@media (max-width: 1300px) {
+  .carousel-prev { left: -20px; }
+  .carousel-next { right: -20px; }
+}
+
+@media (max-width: 768px) {
+  .carousel-prev { left: 10px; }
+  .carousel-next { right: 10px; }
+}

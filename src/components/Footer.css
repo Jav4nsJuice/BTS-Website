@@ -48,11 +48,6 @@
 .footer-section a {
   color: var(--background-white);
   text-decoration: none;
-  transition: transform 0.3s ease; /* Keep transition for other effects if any */
-}
-
-.social-media .footer-title {
-  text-align: left;
 }
 
 .social-links {
@@ -63,7 +58,6 @@
 
 .social-links a {
   font-size: 1.75rem;
-  color: var(--background-white);
   transition: transform 0.3s ease;
 }
 
@@ -85,19 +79,10 @@
     text-align: center;
   }
 
-  .footer-section p {
-    justify-content: center;
-  }
-
-  .footer-title {
-    text-align: center;
-  }
-
-  .social-media .footer-title {
-    text-align: center;
-  }
-
+  .footer-title,
+  .footer-section p,
   .social-links {
+    text-align: center;
     justify-content: center;
   }
 }
